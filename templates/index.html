@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if quiz %}{{ quiz.title }}{% else %}No Quiz Available{% endif %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .options label {
+            display: block;
+            margin: 5px 0;
+        }
+        h1 {
+            color: #333;
+        }
+        hr {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    {% if quiz %}
+        <h1>{{ quiz.title }}</h1>
+        <p>{{ quiz.description }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+                <div class="question">
+                    <p><strong>{{ forloop.counter }}. {{ question.text }}</strong></p>
+                    <div class="options">
+                        {% for option in question.options.all %}
+                            <label>
+                                <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}">
+                                {{ option.text }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+            <button type="submit">Submit</button>
+        </form>
+    {% else %}
+        <h2>No quiz available at the moment.</h2>
+    {% endif %}
+</body>
+</html>
