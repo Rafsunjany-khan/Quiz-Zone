@@ -1,25 +1,51 @@
-# forms.py
 from django import forms
-from django.core.exceptions import ValidationError
-from .models import CustomUser
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import User, Quiz, Question, Option, Rating
 
-class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    retype_password = forms.CharField(widget=forms.PasswordInput)
+
+# ------------------------
+# User Signup & Login
+# ------------------------
+class UserRegisterForm(UserCreationForm):
+    full_name = forms.CharField(max_length=200, required=True)
+    email = forms.EmailField(required=True)
+    phone = forms.CharField(max_length=20, required=True)
 
     class Meta:
-        model = CustomUser
-        fields = ['full_name', 'email']
+        model = User
+        fields = ['full_name', 'email', 'phone', 'password1', 'password2']
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if CustomUser.objects.filter(email=email).exists():
-            raise ValidationError("Email already exists")
-        return email
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        retype_password = cleaned_data.get("retype_password")
-        if password != retype_password:
-            raise ValidationError("Passwords do not match")
+class UserLoginForm(AuthenticationForm):
+    username = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+
+
+# ------------------------
+# Quiz & Question Creation (Admin)
+# ------------------------
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['title', 'description', 'category', 'has_time_limit', 'time_limit']
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'points']
+
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        fields = ['label', 'text', 'is_correct']
+
+
+# ------------------------
+# Quiz Rating (Student)
+# ------------------------
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['score']
