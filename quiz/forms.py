@@ -1,41 +1,63 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Quiz, Question, Option, Rating
-
+from .models import *
 
 # ------------------------
-# User Signup & Login
+# User Signup
 # ------------------------
-class UserRegisterForm(UserCreationForm):
-    full_name = forms.CharField(max_length=200, required=True)
-    email = forms.EmailField(required=True)
-    phone = forms.CharField(max_length=20, required=True)
+class UserRegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
 
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone', 'password1', 'password2']
+        fields = ['full_name', 'email', 'phone', 'password', 'password2']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('password') != cleaned_data.get('password2'):
+            raise forms.ValidationError("Passwords do not match")
+        return cleaned_data
 
-class UserLoginForm(AuthenticationForm):
-    username = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        # Store password as plain text or hashed using make_password
+        from django.contrib.auth.hashers import make_password
+        user.password = make_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
 
 
 # ------------------------
-# Quiz & Question Creation (Admin)
+# User Login
+# ------------------------
+class UserLoginForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+
+
+
+# ------------------------
+# Quiz Form (Admin)
 # ------------------------
 class QuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'description', 'category', 'has_time_limit', 'time_limit']
+        fields = ['title', 'category', 'has_time_limit', 'time_limit']
 
 
+# ------------------------
+# Question Form (Admin)
+# ------------------------
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = ['text', 'points']
 
 
+# ------------------------
+# Option Form (Admin)
+# ------------------------
 class OptionForm(forms.ModelForm):
     class Meta:
         model = Option
@@ -43,7 +65,7 @@ class OptionForm(forms.ModelForm):
 
 
 # ------------------------
-# Quiz Rating (Student)
+# Quiz Rating Form (Student)
 # ------------------------
 class RatingForm(forms.ModelForm):
     class Meta:
