@@ -1,0 +1,104 @@
+    /* Body */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(to bottom, #f0f8ff, #e6f7ff);
+    }
+
+    /* ---------------- Navbar ---------------- */
+    /* Make everything white by default */
+    .navbar .navbar-brand,
+    .navbar .nav-link,
+    .nav-accent {
+        color: #ffffff !important;
+    }
+
+    /* Nav items (smaller) */
+    .navbar .nav-link,
+    .nav-accent {
+        font-size: 1.1rem;
+        margin-left: 0.6rem;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    /* BRAND (bigger) — force precedence even if it has .nav-accent */
+    .navbar .navbar-brand {
+        font-size: 2.6rem !important;
+        font-weight: 800;
+        line-height: 1;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    /* Hover effects */
+    .navbar .navbar-brand:hover,
+    .navbar .nav-link:hover,
+    .nav-accent:hover {
+        color: #ffc107 !important;
+        transform: scale(1.05);
+    }
+
+    /* Responsive: keep brand big but safe on small screens */
+    @media (max-width: 576px) {
+        .navbar .navbar-brand { font-size: 2rem !important; }
+        .navbar .nav-link, .nav-accent { font-size: 1rem; }
+    }
+
+    /* ---------------- Banner ---------------- */
+    .banner {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 4rem 1rem;
+    }
+
+    .banner h1 {
+        font-weight: 700;
+        margin-bottom: 15px;
+        font-size: 2.8rem;
+    }
+
+    .banner p {
+        font-size: 1.4rem;
+    }
+
+    /* ---------------- About ---------------- */
+    #about h2 {
+        color: #2575fc;
+        font-weight: 700;
+        margin-bottom: 30px;
+        font-size: 2rem;
+    }
+
+    #about ol li {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    /* ---------------- Footer ---------------- */
+    footer {
+        padding: 2rem 1rem;
+    }
+
+    /* Links hover */
+    footer a {
+        transition: transform 0.3s, color 0.3s;
+    }
+    footer a:hover {
+        color: #ff6f61 !important;
+        transform: scale(1.2);
+    }
+    footer p a:hover {
+        color: #ff6f61 !important;
+        text-decoration: underline;
+    }
+
+    /* Sizing */
+    footer h5 { font-size: 1.4rem; font-weight: 600; }
+    footer p, footer small { font-size: 1rem; }
+
+    /* Ensure middle column stacks icons over copyright and centers them */
+    footer .col-md-4.d-flex {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
