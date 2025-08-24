@@ -1,15 +1,12 @@
 from django.urls import path
 from . import views
 
+app_name = "quiz"
+
 urlpatterns = [
     # Landing / Home
     path("", views.index, name="index"),
     path("home/", views.home, name="home"),
-
-    # Authentication
-    path("signup/", views.signup_view, name="signup"),
-    path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
 
     # Categories & Quizzes
     path("categories/", views.category_list, name="category_list"),

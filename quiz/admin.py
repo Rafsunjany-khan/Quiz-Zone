@@ -1,14 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, Quiz, Question, Option, QuizAttempt, Rating
-
-# ------------------------
-# User Admin
-# ------------------------
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'full_name', 'phone', 'is_active')
-    search_fields = ('email', 'full_name', 'phone')
-
+from .models import Category, Quiz, Question, Option, QuizAttempt, Rating
 
 # ------------------------
 # Option Inline for Question
@@ -19,7 +10,6 @@ class OptionInline(admin.TabularInline):
     max_num = 4
     min_num = 4
 
-
 # ------------------------
 # Question Admin
 # ------------------------
@@ -28,14 +18,12 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('text', 'quiz', 'points')
     inlines = [OptionInline]
 
-
 # ------------------------
 # Quiz Admin
 # ------------------------
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'has_time_limit', 'time_limit')
-
 
 # ------------------------
 # Category Admin
@@ -44,14 +32,12 @@ class QuizAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
-
 # ------------------------
 # Quiz Attempt Admin
 # ------------------------
 @admin.register(QuizAttempt)
 class QuizAttemptAdmin(admin.ModelAdmin):
     list_display = ('user', 'quiz', 'score', 'started_at', 'completed_at')
-
 
 # ------------------------
 # Rating Admin

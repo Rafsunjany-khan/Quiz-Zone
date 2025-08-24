@@ -1,95 +1,58 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
 from django.utils import timezone
-from .forms import UserRegisterForm, UserLoginForm
-from .models import *
+from django.contrib.auth.decorators import login_required
+from .models import Category, Quiz, Option, QuizAttempt
 
 
 def index(request):
     return render(request, 'index.html', {'logged_in': 'user_id' in request.session})
 
+
+@login_required
 def home(request):
-    categories = Category.objects.prefetch_related("quiz_set__questions__options").all()
-    logged_in = 'user_id' in request.session
-    return render(request, "home.html", {"categories": categories, "logged_in": logged_in})
+    user = request.user
+    categories = Category.objects.prefetch_related("quiz_set__questions").all()
 
-# ------------------------
-# Signup
-# ------------------------
-def signup_view(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Account created successfully!")
-            return redirect('login')
-        else:
-            messages.error(request, "Please correct the errors below.")
-    else:
-        form = UserRegisterForm()
-    return render(request, 'signup.html', {'form': form})
+    for category in categories:
+        quizzes_with_score = []
+        for quiz in category.quiz_set.all():
+            # Get latest attempt for this user
+            attempt = QuizAttempt.objects.filter(user=user, quiz=quiz).order_by('-completed_at').first()
+            quiz.user_score = attempt.score if attempt else None
+            quizzes_with_score.append(quiz)
+        category.quizzes = quizzes_with_score  # attach quizzes with score
 
-# ------------------------
-# Login
-# ------------------------
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        try:
-            user = User.objects.get(email=email)
-            if user.is_active and check_password(password, user.password):
-                request.session['user_id'] = user.id
-                messages.success(request, "Logged in successfully!")
-                return redirect('home')
-            else:
-                messages.error(request, "Invalid credentials or inactive account!")
-        except User.DoesNotExist:
-            messages.error(request, "User not found!")
-    return render(request, 'login.html', {'logged_in': 'user_id' in request.session})
+    return render(request, "home.html", {
+        "categories": categories,
+        "logged_in": True
+    })
 
-# ------------------------
-# Logout
-# ------------------------
-def logout_view(request):
-    request.session.flush()  # clears all session data
-    messages.success(request, "Logged out successfully!")
-    return redirect('login')
-
-
-
-
-# ------------------------
-# Step 1: List categories
-# ------------------------
+@login_required
 def category_list(request):
     categories = Category.objects.all()
     return render(request, "category_list.html", {"categories": categories})
 
-
-# ------------------------
-# Step 2: Show quizzes under a category
-# ------------------------
+@login_required
 def quiz_list(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     quizzes = Quiz.objects.filter(category=category)
-    return render(request, "quiz_list.html", {"category": category, "quizzes": quizzes})
+    return render(request, "quiz_list.html", {
+        "category": category,
+        "quizzes": quizzes,
+        "logged_in": request.user.is_authenticated
+    })
 
-
-# ------------------------
-# Step 3: Attempt quiz
-# ------------------------
+@login_required
 def start_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     questions = quiz.questions.prefetch_related("options")
 
-    user_id = request.session.get("user_id")
-    if not user_id:
+    if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to attempt a quiz.")
-        return redirect("login")
+        return redirect("auth:login")
 
-    user = get_object_or_404(User, id=user_id)
+    user = request.user
 
     if request.method == "POST":
         score = 0
@@ -100,14 +63,14 @@ def start_quiz(request, quiz_id):
                 if option.is_correct:
                     score += question.points
 
-        # save attempt
-        QuizAttempt.objects.create(
+        # create or update attempt
+        QuizAttempt.objects.update_or_create(
             user=user,
             quiz=quiz,
-            score=score,
-            completed_at=timezone.now()
+            defaults={'score': score, 'completed_at': timezone.now()}
         )
+
         messages.success(request, f"You scored {score} points in {quiz.title}!")
-        return redirect("category_list")
+        return redirect("quiz:category_list")  # use namespace
 
     return render(request, "start_quiz.html", {"quiz": quiz, "questions": questions})
