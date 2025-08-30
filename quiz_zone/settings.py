@@ -11,9 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_8q&w$$px_&oi&8jv!o93xb-zw4*wna)(lzktko*bu@%nrqm@h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['quiz-zone.onrender.com']
 
 
 # Application definition
@@ -132,3 +133,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "rafsunjanykhan20@gmail.com"
 EMAIL_HOST_PASSWORD = "ecub vdaf azxr lzdw"
+
+
+CSRF_TRUSTED_ORIGINS = ['https://quiz-zone.onrender.com']
+SECURE_SSL_REDIRECT = True  # redirect HTTP → HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
