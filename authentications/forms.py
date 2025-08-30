@@ -4,10 +4,7 @@ from django.contrib.auth import authenticate
 import re
 from .models import User
 
-
-# ------------------------
 # Signup Form
-# ------------------------
 class SignupForm(forms.Form):
     full_name = forms.CharField(
         max_length=200,

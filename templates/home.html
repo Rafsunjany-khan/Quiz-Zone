@@ -27,7 +27,7 @@
                     </div>
                     <div class="card-body p-2">
                         {% for quiz in category.quizzes %}
-                            {% if quiz.user_score %}
+                            {% if quiz.attempted %}
                                 <p class="mb-1">{{ quiz.title }} - {{ quiz.user_score }}/{{ quiz.questions.count }}</p>
                             {% else %}
                                 <p class="mb-1">{{ quiz.title }} - Not Attempted</p>

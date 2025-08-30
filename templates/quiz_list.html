@@ -9,7 +9,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
-                        <h5 class="card-title">{{ quiz.title }}</h5> <span>{{ quiz.questions.count }}</span>
+                        <h5 class="card-title">{{ quiz.title }}</h5> <span> Total-Question: {{ quiz.questions.count }}</span>
                         <a href="{% url 'quiz:start_quiz' quiz.id %}" class="btn btn-success mt-3">Start Quiz</a>
                     </div>
                 </div>

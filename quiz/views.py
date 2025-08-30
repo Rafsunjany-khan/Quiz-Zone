@@ -19,7 +19,8 @@ def home(request):
         for quiz in category.quiz_set.all():
             # Get latest attempt for this user
             attempt = QuizAttempt.objects.filter(user=user, quiz=quiz).order_by('-completed_at').first()
-            quiz.user_score = attempt.score if attempt else None
+            quiz.user_score = attempt.score if attempt else 0  # set 0 if no score
+            quiz.attempted = attempt is not None                # True if attempted, False if not
             quizzes_with_score.append(quiz)
         category.quizzes = quizzes_with_score  # attach quizzes with score
 
@@ -27,6 +28,24 @@ def home(request):
         "categories": categories,
         "logged_in": True
     })
+
+# def home(request):
+#     user = request.user
+#     categories = Category.objects.prefetch_related("quiz_set__questions").all()
+#
+#     for category in categories:
+#         quizzes_with_score = []
+#         for quiz in category.quiz_set.all():
+#             # Get latest attempt for this user
+#             attempt = QuizAttempt.objects.filter(user=user, quiz=quiz).order_by('-completed_at').first()
+#             quiz.user_score = attempt.score if attempt else None
+#             quizzes_with_score.append(quiz)
+#         category.quizzes = quizzes_with_score  # attach quizzes with score
+#
+#     return render(request, "home.html", {
+#         "categories": categories,
+#         "logged_in": True
+#     })
 
 @login_required
 def category_list(request):
