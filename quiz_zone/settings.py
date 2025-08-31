@@ -14,8 +14,8 @@ SECRET_KEY = 'django-insecure-_8q&w$$px_&oi&8jv!o93xb-zw4*wna)(lzktko*bu@%nrqm@h
 DEBUG = False
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['quiz-zone.onrender.com']
-
+ALLOWED_HOSTS = ['rafsunjany.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = ['https://rafsunjany.pythonanywhere.com']
 
 # Application definition
 
@@ -119,6 +119,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -135,7 +136,6 @@ EMAIL_HOST_USER = "rafsunjanykhan20@gmail.com"
 EMAIL_HOST_PASSWORD = "ecub vdaf azxr lzdw"
 
 
-CSRF_TRUSTED_ORIGINS = ['https://quiz-zone.onrender.com']
-SECURE_SSL_REDIRECT = True  # redirect HTTP → HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
