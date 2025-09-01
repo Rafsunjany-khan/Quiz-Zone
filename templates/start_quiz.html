@@ -6,10 +6,10 @@
     <div class="card shadow-sm p-4">
         <h2 class="text-center mb-4">{{ quiz.title }}</h2>
 
-        <form method="post">
+        <form id="quizForm" method="post">
             {% csrf_token %}
             {% for question in questions %}
-                <div class="mb-3">
+                <div class="mb-3 question-block">
                     <p><strong>{{ forloop.counter }}. {{ question.text }}</strong></p>
                     {% for option in question.options.all %}
                         <div class="form-check">
@@ -31,4 +31,33 @@
         </form>
     </div>
 </div>
+
+<script>
+document.getElementById("quizForm").addEventListener("submit", function(e) {
+    let allAnswered = true;
+
+    // Reset previous highlights
+    document.querySelectorAll(".question-block").forEach(q => {
+        q.style.border = "none";
+        q.style.backgroundColor = "";
+    });
+
+    {% for question in questions %}
+        const options_{{ question.id }} = document.getElementsByName("{{ question.id }}");
+        let answered = false;
+        options_{{ question.id }}.forEach(opt => { if (opt.checked) answered = true; });
+        if (!answered) {
+            allAnswered = false;
+            // Highlight unanswered question
+            document.querySelector(".question-block:nth-of-type({{ forloop.counter }})").style.border = "2px solid red";
+            document.querySelector(".question-block:nth-of-type({{ forloop.counter }})").style.backgroundColor = "#ffe6e6";
+        }
+    {% endfor %}
+
+    if (!allAnswered) {
+        e.preventDefault();
+        alert("Please answer all questions before submitting!");
+    }
+});
+</script>
 {% endblock %}

@@ -16,18 +16,15 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold nav-accent" href="{% url 'quiz:home' %}">Quiz Zone</a>
+        <a class="navbar-brand fw-bold nav-accent" href="{% if user.is_authenticated %}{% url 'quiz:home' %}{% else %}{% url 'quiz:index' %}{% endif %}">
+            <img src="{% static 'images/logo.png' %}" alt="Quiz Zone" height="40">
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link nav-accent" href="#about">About Us</a></li>
-                {% if logged_in %}
-                    <li class="nav-item"><a class="nav-link nav-accent" href="#">Guideline</a></li>
-                    <li class="nav-item"><a class="nav-link nav-accent" href="#">Notification</a></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a></li>
-                {% endif %}
+            <ul class="navbar-nav" id="navbar-items">
+                <!-- Navbar items injected by JS -->
             </ul>
         </div>
     </div>
@@ -64,5 +61,33 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Navbar JS for dynamic login/logout -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById('navbar-items');
+    const userIsAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+    const userIsActive = {{ user.is_active|yesno:"true,false" }};
+
+    if(userIsAuthenticated && userIsActive) {
+        // Post-login navbar
+        navbar.innerHTML = `
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/home/' ? 'active' : ''}" href="{% url 'quiz:home' %}">Home</a></li>
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/about/' ? 'active' : ''}" href="{% url 'quiz:about' %}">About Us</a></li>
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/guideline/' ? 'active' : ''}" href="{% url 'quiz:guideline' %}">Guide Line</a></li>
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/notification/' ? 'active' : ''}" href="{% url 'quiz:notification' %}">Notification</a></li>
+            <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a></li>
+        `;
+    } else {
+        // Pre-login / unverified navbar
+        navbar.innerHTML = `
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/about/' ? 'active' : ''}" href="{% url 'quiz:about' %}">About Us</a></li>
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/guideline/' ? 'active' : ''}" href="{% url 'quiz:guideline' %}">Guide Line</a></li>
+            <li class="nav-item"><a class="nav-link ${window.location.pathname == '/login/' ? 'active' : ''}" href="{% url 'login' %}">Login</a></li>
+        `;
+    }
+});
+</script>
+
 </body>
 </html>

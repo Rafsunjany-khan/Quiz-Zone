@@ -47,10 +47,13 @@ def signup_view(request):
             )
 
             messages.success(request, "Account created! Please check your email to verify.")
-            return redirect('login')
+            return render(request, 'email_verification.html', {'user': user})
     else:
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
+
+def email_verification(request):
+    return render(request, "email_verification.html")
 
 # ------------------------
 # Email Activation View
@@ -96,4 +99,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
-    return redirect('login')
+    return redirect('quiz:index')

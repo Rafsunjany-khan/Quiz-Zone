@@ -34,7 +34,7 @@ class Question(models.Model):
 class Option(models.Model):
     LABEL_CHOICES = (('A','Option A'),('B','Option B'),('C','Option C'),('D','Option D'))
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='options')
-    label = models.CharField(max_length=1, choices=LABEL_CHOICES, editable=False)
+    label = models.CharField(max_length=1, choices=LABEL_CHOICES, editable=True)
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
 
@@ -72,7 +72,7 @@ class QuizAttempt(models.Model):
 class Rating(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="ratings")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    score = models.IntegerField(choices=[(i, str(i)) for i in range(1, 8)])  # 1–7 rating
+    score = models.IntegerField(choices=[(i, str(i)) for i in range(1, 8)])
 
     class Meta:
         unique_together = ('quiz','user')

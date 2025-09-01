@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Guideline | Quiz Zone{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">Guidelines for Quiz Zone</h2>
+    <p class="fs-5">
+        Welcome to Quiz Zone! To get the best experience while using our platform, please follow these guidelines:
+    </p>
+    <ol class="fs-5">
+        <li>Register and login to access all quizzes.</li>
+        <li>Always complete the quiz by answering all questions before submitting.</li>
+        <li>You can only rate a quiz after completing it.</li>
+        <li>Do not refresh the page during a quiz attempt to avoid losing your answers.</li>
+        <li>Check your internet connection to ensure smooth quiz submission.</li>
+        <li>Respect other users and do not share quiz answers publicly.</li>
+        <li>Contact support for any technical issues.</li>
+    </ol>
+    <p class="text-center mt-4">
+        {% if logged_in %}
+            <a href="{% url 'quiz:home' %}" class="btn btn-primary">Back to Home</a>
+        {% else %}
+            <a href="{% url 'quiz:index' %}" class="btn btn-primary">Back to Home</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

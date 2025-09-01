@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Notification | Quiz Zone{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-sm p-4 text-center">
+        <h2 class="mb-4">
+            Hello, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}!
+        </h2>
+        <p class="lead">
+            Your registered email is: <strong>{{ user.email }}</strong>
+        </p>
+        <p class="text-muted">
+            This is your notification page (currently only shows your info).
+        </p>
+    </div>
+</div>
+{% endblock %}

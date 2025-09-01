@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Home | Quiz Zone{% endblock %}
+
+{% block title %}Sign Up | Quiz Zone{% endblock %}
 
 {% block content %}
 
 <!-- Signup Section -->
-<section class="signup-section">
+<section class="signup-section py-5">
   <div class="container">
-    <div class="signup-card">
-      <h2>Sign Up</h2>
+    <div class="signup-card shadow p-4">
+      <h2 class="text-center mb-4">Sign Up</h2>
       <form method="POST" action="{% url 'signup' %}">
         {% csrf_token %}
         <div class="mb-3">
@@ -40,4 +41,5 @@
     </div>
   </div>
 </section>
+
 {% endblock %}

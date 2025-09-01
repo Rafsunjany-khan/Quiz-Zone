@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Email Verification | Quiz Zone{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h2>Almost done!</h2>
+    <p>Thank you for signing up. A confirmation email has been sent to your email address.</p>
+    <p>Please check your inbox and click the verification link to activate your account.</p>
+    <a href="{% url 'quiz:index' %}" class="btn btn-primary mt-3">Go to Home</a>
+</div>
+{% endblock %}

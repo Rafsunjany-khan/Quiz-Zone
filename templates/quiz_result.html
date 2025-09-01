@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} - Results{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Quiz Result Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center">{{ quiz.title }} - Results</h3>
+                </div>
+                <div class="card-body text-center">
+                    {% if attempt %}
+                        <p class="h4">Your Score: <span class="fw-bold">{{ attempt.score }}</span></p>
+                        <p>Total Questions: {{ quiz.questions.count }}</p>
+                    {% else %}
+                        <p class="text-danger">You have not attempted this quiz yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Rating Card -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0 text-center">Rate this Quiz</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if user_rating %}
+                        <p class="h5">You rated this quiz:</p>
+                        <p class="display-6 text-warning">
+                            {% for i in "1234567"|slice:":user_rating.score"|make_list %}
+                                ★
+                            {% endfor %}
+                            {% for i in "1234567"|slice:"user_rating.score:"|make_list %}
+                                <span style="color: lightgray;">★</span>
+                            {% endfor %}
+                        </p>
+                    {% else %}
+                        <form method="post" class="d-inline-block">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-success btn-lg mt-3">Submit Rating</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="{% url 'quiz:category_list' %}" class="btn btn-outline-primary">Back to Categories</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
